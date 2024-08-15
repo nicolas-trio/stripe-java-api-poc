@@ -8,4 +8,4 @@ The idea of this POC is:
   - user a buyer account (regular marketplace account)
   - make a payment using stripe api
     - send a part of the payment to the seller stripe account
-    - send the fee part to marketplate stripe account
+    - send the fee part to marketplace stripe account
