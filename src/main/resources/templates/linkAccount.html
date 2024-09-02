@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Onboarding</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            text-align: center;
+        }
+        button {
+            background-color: #6772e5;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #5469d4;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Connect Your Stripe Account</h1>
+    <button id="connect-button">Connect with Stripe</button>
+</div>
+<script>
+    document.getElementById('connect-button').addEventListener('click', function() {
+        fetch('/api/sellers/1/link', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.url) {
+                alert('created accountId: ' + data.stripeId);
+                window.location.href = data.url;
+            } else {
+                alert('Error creating account link.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error creating account link.');
+        });
+    });
+</script>
+</body>
+</html>

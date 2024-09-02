@@ -23,6 +23,12 @@ public class Product {
     @Column(nullable = false)
     private double price;
 
+    @Column(nullable = false)
+    private String stripeId;
+
+    @Column(nullable = false)
+    private String priceStripeId;
+
     public Product(){}
 
     public Product(String name, User seller, double price){
@@ -53,5 +59,21 @@ public class Product {
 
     public void setSeller(User seller) {
         this.seller = seller;
+    }
+
+    public String getStripeId() {
+        return stripeId;
+    }
+
+    public void setStripeId(String stripeId) {
+        this.stripeId = stripeId;
+    }
+
+    public String getPriceStripeId() {
+        return priceStripeId;
+    }
+
+    public void setPriceStripeId(String priceStripeId) {
+        this.priceStripeId = priceStripeId;
     }
 }

@@ -4,7 +4,7 @@ public class NewProductRequest {
 
     private String name;
     private Long sellerId;
-    private double price;
+    private Long price;
 
     public NewProductRequest(){}
 
@@ -24,11 +24,11 @@ public class NewProductRequest {
         this.sellerId = sellerId;
     }
 
-    public double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 }

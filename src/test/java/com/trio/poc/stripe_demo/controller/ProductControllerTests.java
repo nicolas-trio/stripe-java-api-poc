@@ -1,13 +1,20 @@
 package com.trio.poc.stripe_demo.controller;
 
+import com.stripe.exception.StripeException;
 import com.trio.poc.stripe_demo.model.Product;
 import com.trio.poc.stripe_demo.model.User;
 import com.trio.poc.stripe_demo.repository.UserRepository;
+import com.trio.poc.stripe_demo.stripe.StripeService;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -20,10 +27,14 @@ import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ExtendWith(MockitoExtension.class)
 public class ProductControllerTests {
 
     private static final String API_ROOT
             = "http://localhost:8080/api/products";
+
+    @MockBean
+    StripeService stripeService;
 
     @Autowired
     UserRepository userRepository;
@@ -34,7 +45,13 @@ public class ProductControllerTests {
         return new Product(randomAlphabetic(10), seller, 10d);
     }
 
-    private String postProduct(Product product) {
+    private String postProduct(Product product) throws StripeException {
+
+        Mockito.when(stripeService.createProduct(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .thenReturn("some-product-id");
+        Mockito.when(stripeService.createPrice(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .thenReturn("some-price-id");
+
         Map<String,Object> body = new HashMap<>();
         body.put("name", product.getName());
         body.put("sellerId", product.getSeller().getId());
@@ -56,7 +73,7 @@ public class ProductControllerTests {
     }
 
     @Test
-    public void whenGetProductByTitle_thenOK() {
+    public void whenGetProductByTitle_thenOK() throws StripeException {
         Product product = createRandomProduct();
         postProduct(product);
         Response response = RestAssured.get(
@@ -66,7 +83,7 @@ public class ProductControllerTests {
         assertFalse(response.as(List.class).isEmpty());
     }
     @Test
-    public void whenGetCreatedProductById_thenOK() {
+    public void whenGetCreatedProductById_thenOK() throws StripeException {
         Product product = createRandomProduct();
         String location = postProduct(product);
         Response response = RestAssured.get(location);
